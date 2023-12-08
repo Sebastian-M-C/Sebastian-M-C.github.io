@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Krub:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/normalize.css">
+
+    <link href="css/styles.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <header>
+
+        <h1>Metodos Probabilisticos</h1> 
+        <a class="titulo" href="inicio.html">
+            <img src="images/pngwing.com.png" height="60px" width="60px"></a>
+    </header>
+
+    <nav class="navegacion">
+        <a  href="normal.html">Distribucion normal</a>
+        <a  href="binomial.html">Distribucion binomial</a>
+        <a  href="poisson.html">Distribucion poisson</a>
+
+    </nav>
+
+
+
+
+
+    <section class="poisson">
+        <h3> Qué es la distribución de Poisson</h3>
+
+        <div class="poisocon">
+      <p> La distribución de Poisson es una distribución de probabilidad discreta 
+         que se aplica a las ocurrencias de algún evento durante un periodo 
+         determinado. Es decir, es una distribución de probabilidad discreta en la que solo es necesario conocer los eventos y cuál es su frecuencia media de ocurrencia para poder conocer la probabilidad de que ocurran.
+          Una distribución es discreta cuando se toma un número de valor finito, mientras que las continuas usan un número infinito de valores.
+        
+       </p>
+    </div>
+         
+     </section>
+    <main class="sombra">
+        <h3>Distribucion de Poisson</h3>
+
+      
+
+        <div id="calculadora-poisson">
+
+            <label for="lambda">Tasa (λ):</label>
+            <input type="number" id="lambda" placeholder="Tasa (λ)">
+            
+            <label for="x">Número de ocurrencias deseadas (x):</label>
+            <input type="number" id="x" placeholder="Número de ocurrencias deseadas">
+            <button class="boton" onclick="calcularDistribucionPoisson()">Calcular</button>
+            <p id="resultado-poisson">Resultado aparecerá aquí</p>
+        </div>
+
+        <script>
+            function calcularDistribucionPoisson() {
+                const lambda = parseFloat(document.getElementById('lambda').value);
+                const x = parseInt(document.getElementById('x').value);
+
+                const probabilidad = calcularProbabilidadPoisson(lambda, x);
+                document.getElementById('resultado-poisson').innerText = `La probabilidad acumulativa en ${x} ocurrencias es: ${probabilidad.toFixed(6)}`;
+            }
+
+            function calcularProbabilidadPoisson(lambda, x) {
+                const numerador = Math.pow(lambda, x) * Math.exp(-lambda);
+                const denominador = factorial(x);
+                return numerador / denominador;
+            }
+
+            function factorial(num) {
+                if (num === 0 || num === 1) {
+                    return 1;
+                } else {
+                    return num * factorial(num - 1);
+                }
+            }
+        </script>
+
+
+
+
+ 
+</main>
+
+    
+</body>
+</html>

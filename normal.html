@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Krub:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/normalize.css">
+
+    <link href="css/styles.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <header>
+
+        <h1>Metodos Probabilisticos</h1> 
+        <a class="titulo" href="inicio.html">
+            <img src="images/pngwing.com.png" height="60px" width="60px"></a>
+    </header>
+
+    <nav class="navegacion">
+        <a  href="normal.html">Distribucion normal</a>
+        <a  href="binomial.html">Distribucion binomial</a>
+        <a  href="poisson.html">Distribucion poisson</a>
+
+    </nav>
+
+
+
+    <section class="normal">
+        <h3> Qué es la distribución de Normal</h3>
+
+        <div class="normalcon">
+      <p> En estadística y probabilidad, una distribución normal, también llamada distribución de Gauss, distribución gaussiana o distribución de Laplace-Gauss, es la más importante de todas las distribuciones de probabilidad de variable continua y es la que aparece con más frecuencia en estadística y en la teoría de probabilidades
+        
+       </p>
+    </div>
+    </section>
+
+    <main class="sombra">
+  
+            <h3>Distribucion normal </h3>
+            <div id="calculadora-normal">
+                <label for="media">Media:</label>
+                <input type="number" id="media" placeholder="Media">
+                
+                <label for="desviacion">Desviacion estándar:</label>
+                <input type="number" id="desviacion" placeholder="Desviacion estándar">
+                
+                <label for="valor-x">Valor X:</label>
+                <input type="number" id="valor-x" placeholder="Valor X">
+                
+                <button class="boton" onclick="calcularDistribucionNormal()">Calcular</button>
+                
+                <p id="resultado">Resultado aparecerá aquí</p>
+            </div>
+    
+            <script>
+                function calcularDistribucionNormal() {
+                    const media = parseFloat(document.getElementById('media').value);
+                    const desviacion_estandar = parseFloat(document.getElementById('desviacion').value);
+                    const x = parseFloat(document.getElementById('valor-x').value);
+    
+                    // Calculamos la probabilidad acumulativa usando la función de error (erf) de JavaScript
+                    const probabilidad = 0.5 * (1 + erf((x - media) / (desviacion_estandar * Math.sqrt(2))));
+                    document.getElementById('resultado').innerText = `La probabilidad acumulativa en ${x} es: ${probabilidad.toFixed(6)}`;
+                }
+    
+                // Función de error (erf) para calcular la probabilidad acumulativa
+                function erf(x) {
+                    // save the sign of x
+                    var sign = (x >= 0) ? 1 : -1;
+                    x = Math.abs(x);
+    
+                    // constants
+                    var a1 =  0.254829592;
+                    var a2 = -0.284496736;
+                    var a3 =  1.421413741;
+                    var a4 = -1.453152027;
+                    var a5 =  1.061405429;
+                    var p  =  0.3275911;
+    
+                    // A&S formula 7.1.26
+                    var t = 1.0/(1.0 + p*x);
+                    return sign * (1 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t * Math.exp(-x*x));
+                }
+            </script>
+
+
+    
+</main>
+
+    
+</body>
+</html>
