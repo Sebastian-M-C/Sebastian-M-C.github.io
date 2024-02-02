@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <h3>Método: Peso Total T1</h3>
+    <pre>
+        <!-- Código del método pesoT1 -->
+        public float pesoT1() {
+            int i = 0; float sum = 0; Vertice v;
+            while (i < LVertices.dim()){
+                v = (Vertice) LVertices.getElem(i);
+                int j = 0;
+                while (j < v.LArcos.dim()){
+                    Arco a = (Arco) v.LArcos.getElem(j);
+                    sum = sum + a.getCosto();
+                    j++;
+                }
+                i++;
+            }
+            return sum;
+        }
+
+        System.out.println(h.pesoT1());
+    </pre>
+
+    <h3>Método: Cantidad de Caminos</h3>
+    <pre>
+        <!-- Código del método cantidadCamino -->
+        private int cantidadCamino(Vertice v, String Y) {
+            v.marcado = true;
+            Arco a;
+            int c = 0;
+
+            for (int i = 0; i < v.LArcos.dim(); i++) {
+                a = (Arco) v.LArcos.getElem(i);
+
+                if (a != null) {
+                    Vertice v2 = buscarVertice(a.getNombreVertD());
+                    if (!v2.marcado) {
+                        if (v2.getNombre().equals(Y))
+                            c = c + 1;
+                        else {
+                            c = c + cantidadCamino(v2, Y);
+                            v2.marcado = false;
+                        }
+                    }
+                }
+            }
+
+            return c;
+        }
+
+        Vertice vInicial = h.buscarVertice("A");
+        String destino = "C";
+        System.out.println("El camino es: "+ h.cantidadCamino(vInicial, destino));
+    </pre>
+
+    <!-- Otros métodos y operaciones en el grafo -->
+
+    <h2>Creación y Comparación de Grafos</h2>
+
+    <pre>
+        <!-- Código de creación y comparación de grafos -->
+        public boolean iguales(Grafo g2) {
+            if (this.LVertices.dim() != g2.LVertices.dim()) {
+                return false; // La cantidad de vértices es diferente, no son iguales
+            }
+        
+            for (int i = 0; i < this.LVertices.dim(); i++) {
+                Vertice v1 = (Vertice) this.LVertices.getElem(i);
+                Vertice v2 = g2.buscarVertice(v1.getNombre());
+        
+                if (v2 == null || v1.LArcos.dim() != v2.LArcos.dim()) {
+                    return false; // No se encontró el vértice o la cantidad de arcos es diferente
+                }
+        
+                for (int j = 0; j < v1.LArcos.dim(); j++) {
+                    Arco a1 = (Arco) v1.LArcos.getElem(j);
+                    Arco a2 = buscarArco(v2.LArcos, a1.getNombreVertD());
+        
+                    if (a2 == null || a1.getCosto() != a2.getCosto()) {
+                        return false; // No se encontró el arco o el costo es diferente
+                    }
+                }
+            }
+        
+            return true; // Todos los vértices y arcos son iguales
+        }
+        
+        private Arco buscarArco(Lista listaArcos, String nombreVertD) {
+            for (int i = 0; i < listaArcos.dim(); i++) {
+                Arco arco = (Arco) listaArcos.getElem(i);
+                if (arco.getNombreVertD().equals(nombreVertD)) {
+                    return arco;
+                }
+            }
+            return null; // No se encontró el arco
+        }
+
+        Grafo h = new Grafo();
+        h.crearVertice("A");
+        h.crearVertice("B");
+        h.crearVertice("C");
+        h.insertarArco("A", "B", 7);
+        h.insertarArco("B", "C", 8);
+        h.insertarArco("C", "A", 9);
+
+        Grafo grafo2 = new Grafo();
+        grafo2.crearVertice("A");
+        grafo2.crearVertice("B");
+        grafo2.crearVertice("C");
+        grafo2.insertarArco("A", "B", 7);
+        grafo2.insertarArco("B", "C", 8);
+        grafo2.insertarArco("C", "A", 9);
+
+        System.out.println(h.iguales(grafo2));
+    </pre>
+
+    <!-- Otros bloques de código -->
+
+    <h2>Verificación de Propiedades del Grafo</h2>
+
+    <pre>
+        <!-- Código para verificar propiedades del grafo -->
+        public boolean conexo() {
+            int i = 0;
+            while (i < LVertices.dim()) {
+                int j = 0;
+                Vertice vo = (Vertice) LVertices.getElem(i);
+                while (j < LVertices.dim()) {
+                    Vertice vn = (Vertice) LVertices.getElem(j);
+                    if (vo != null && vn != null && !existeCamino(vo.getNombre(), vn.getNombre()))
+                        return false;
+                    j++;
+                }
+                i++;
+            }
+            return true;
+        }
+
+        System.out.println(h.conexo());
+    </pre>
+
+    <h2>esArbolBinario</h2>
+    <pre>
+       private boolean esArbolBinario(Vertice origen)
+    {
+        origen.marcado=true;
+        System.out.println(origen.getNombre());
+        if(origen.LArcos.dim()>2)
+        {
+            return false;
+        }
+        for (int i = 0; i < origen.LArcos.dim(); i++) {
+            Arco a = (Arco) origen.LArcos.getElem(i);
+            Vertice hijo = buscarVertice(a.getNombreVertD());
+            if(!hijo.marcado)
+            {
+                if(!esArbolBinario(hijo))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+public static void main(String[] args) {
+    Grafo grafo = new Grafo();
+
+    grafo.crearVertice("A");
+    grafo.crearVertice("B");
+    grafo.crearVertice("C");
+    grafo.crearVertice("D");
+
+    grafo.insertarArco("A", "B", 1);
+    grafo.insertarArco("A", "C", 1);
+    grafo.insertarArco("B", "D", 1);
+
+       
+         Vertice origen = grafo.buscarVertice("A");
+
+  
+    System.out.println("¿Es un árbol binario? " + grafo.esArbolBinario(origen)); 
+    </pre>
+
+    <h2>sumaCaminosEntreVerticesDFS</h2>
+    <pre>
+        public int sumaCaminosEntreVerticesDFS(String origen, String destino) {
+            ordenarVerticesAlf();
+            desmarcarTodos();
+            Vertice v = buscarVertice(origen);
+            Vertice v2 = buscarVertice(destino);
+            return (v == null || v2 == null) ? 0 : sumaCaminosEntreVerticesDFS(v, destino);
+        }
+        
+        private int sumaCaminosEntreVerticesDFS(Vertice v, String verticeDestino) {
+            int total = 0;
+            v.marcado = true;
+            for (int i = 0; i < v.LArcos.dim(); i++) {
+                Arco a = (Arco) v.LArcos.getElem(i);
+                Vertice v2 = buscarVertice(a.getNombreVertD());
+                if (!v2.marcado) {
+                    if (v2.getNombre().equals(verticeDestino)) {
+                        total += a.getCosto();
+                    } else {
+                        total += a.getCosto() + sumaCaminosEntreVerticesDFS(v2, verticeDestino);
+                    }
+                }
+            }
+            v.marcado = false;
+            return total;
+        }
+        
+        System.out.println(grafo.sumaCaminosEntreVerticesDFS("A", "C"));
+        
+    </pre>
+
+    <h2>caminoMasCorto</h2>
+    <pre>
+        public void caminoMasCorto(String origen, String destino) {
+            ordenarVerticesAlf();
+            desmarcarTodos();
+            Vertice v = buscarVertice(origen);
+            Vertice v2 = buscarVertice(destino);
+            if (v == null || v2 == null) {
+                System.out.println("Uno de los vértices no existe en el grafo.");
+            } else {
+                LinkedList<Vertice> caminoMasCorto = new LinkedList<>();
+                caminoMasCorto.add(v);
+                float distanciaTotal = caminoMasCorto(origen, destino, v, caminoMasCorto);
+                
+                // Imprimir resultados
+                System.out.print("Camino más corto desde " + origen + " hasta " + destino + ": ");
+                for (Vertice paso : caminoMasCorto) {
+                    System.out.print(paso.getNombre() + " ");
+                }
+                System.out.println("\nDistancia total: " + distanciaTotal);
+            }
+        }
+    
+        private float caminoMasCorto(String origen, String destino, Vertice v, LinkedList<Vertice> camino) {
+            float distanciaTotal = 0;
+            v.marcado = true;
+            float distanciaMinima = Float.MAX_VALUE;
+            Vertice siguiente = null;
+    
+            for (int i = 0; i < v.LArcos.dim(); i++) {
+                Arco a = (Arco) v.LArcos.getElem(i);
+                Vertice v2 = buscarVertice(a.getNombreVertD());
+                if (!v2.marcado) {
+                    if (v2.getNombre().equals(destino)) {
+                        camino.add(v2);
+                        distanciaTotal += a.getCosto();
+                        return distanciaTotal;
+                    } else {
+                        float distanciaRecursiva = a.getCosto() + caminoMasCorto(origen, destino, v2, camino);
+                        if (distanciaRecursiva < distanciaMinima) {
+                            distanciaMinima = distanciaRecursiva;
+                            siguiente = v2;
+                        }
+                    }
+                }
+            }
+    
+            if (siguiente != null) {
+                camino.add(siguiente);
+                distanciaTotal += distanciaMinima;
+            }
+    
+            v.marcado = false;
+            return distanciaTotal;
+        }
+    
+       String origen = "A";
+        String destino = "D";
+    
+       grafo.caminoMasCorto(origen, destino);
+    </pre> 
+
+    <h2>caminoMasLargo</h2>
+    <pre>
+        private float caminoMasLargo(String origen, String destino, Vertice v, LinkedList<Vertice> camino) {
+            float distanciaTotal = 0;
+            v.marcado = true;
+            float distanciaMaxima = Float.MIN_VALUE;
+            Vertice siguiente = null;
+    
+            for (int i = 0; i < v.LArcos.dim(); i++) {
+                Arco a = (Arco) v.LArcos.getElem(i);
+                Vertice v2 = buscarVertice(a.getNombreVertD());
+                if (!v2.marcado) {
+                    if (v2.getNombre().equals(destino)) {
+                        camino.add(v2);
+                        distanciaTotal += a.getCosto();
+                        return distanciaTotal;
+                    } else {
+                        float distanciaRecursiva = a.getCosto() + caminoMasLargo(origen, destino, v2, camino);
+                        if (distanciaRecursiva > distanciaMaxima) {
+                            distanciaMaxima = distanciaRecursiva;
+                            siguiente = v2;
+                        }
+                    }
+                }
+            }
+    
+            if (siguiente != null) {
+                camino.add(siguiente);
+                distanciaTotal += distanciaMaxima;
+            }
+    
+            v.marcado = false;
+            return distanciaTotal;
+        }
+    
+            String origen = "A";
+            String destino = "E";
+    
+        grafo.caminoMasLargo(origen, destino);
+    </pre>
+
+    <h2>mostrarTodosLosCaminos</h2>
+    <pre>
+        public void mostrarTodosLosCaminos(String origen, String destino) {
+            desmarcarTodos();
+            Vertice v = buscarVertice(origen);
+            Vertice v2 = buscarVertice(destino);
+    
+            if (v != null && v2 != null) {
+                LinkedList<Vertice> caminoActual = new LinkedList<>();
+                caminoActual.add(v);
+                dfsMostrarCaminos(v, v2, caminoActual);
+            } else {
+                System.out.println("Origen o destino no encontrado.");
+            }
+        }
+    
+        private void dfsMostrarCaminos(Vertice v, Vertice destino, LinkedList<Vertice> caminoActual) {
+            v.marcado = true;
+    
+            for (int i = 0; i < v.LArcos.dim(); i++) {
+                Arco a = (Arco) v.LArcos.getElem(i);
+                Vertice v2 = buscarVertice(a.getNombreVertD());
+    
+                if (!v2.marcado) {
+                    LinkedList<Vertice> nuevoCamino = new LinkedList<>(caminoActual);
+                    nuevoCamino.add(v2);
+    
+                    if (v2.equals(destino)) {
+                        // Hemos llegado al destino, imprime el camino
+                        imprimirCamino(nuevoCamino);
+                    } else {
+                        dfsMostrarCaminos(v2, destino, nuevoCamino);
+                    }
+                }
+            }
+    
+            v.marcado = false;
+        }
+    
+        private void imprimirCamino(LinkedList<Vertice> camino) {
+            System.out.print("Camino: ");
+            for (Vertice v : camino) {
+                System.out.print(v.getNombre() + " ");
+            }
+            System.out.println();
+        }
+    
+     Grafo grafo = new Grafo();
+         grafo.crearVertice("A");
+        grafo.crearVertice("B");
+        grafo.crearVertice("C");
+        grafo.crearVertice("D");
+        grafo.crearVertice("E");
+    
+        // Agregar arcos
+        grafo.insertarArco("A", "B", 1);
+        grafo.insertarArco("A", "C", 2);
+        grafo.insertarArco("B", "C", 1);
+        grafo.insertarArco("B", "D", 3);
+        grafo.insertarArco("C", "D", 2);
+        grafo.insertarArco("B", "E", 2);
+        grafo.insertarArco("D", "E", 1);
+    
+        String origen = "A";
+        String destino = "E";
+    
+        grafo.caminoMasLargo(origen, destino); 
+    </pre>
+
+    <h2>contarIslas</h2>
+    <pre>
+        public int contarIslas() {
+            desmarcarTodos();
+            int contadorIslas = 0;
+    
+            for (int i = 0; i < LVertices.dim(); i++) {
+                Vertice v = (Vertice) LVertices.getElem(i);
+                if (!v.marcado) {
+                    dfsContarIslas(v);
+                    contadorIslas++;
+                }
+            }
+    
+            return contadorIslas;
+        }
+    
+        private void dfsContarIslas(Vertice v) {
+            v.marcado = true;
+    
+            for (int i = 0; i < v.LArcos.dim(); i++) {
+                Arco a = (Arco) v.LArcos.getElem(i);
+                Vertice v2 = buscarVertice(a.getNombreVertD());
+    
+                if (!v2.marcado) {
+                    dfsContarIslas(v2);
+                }
+            }
+        }
+    
+        public void desmarcarTodos1() {
+            for (int i = 0; i < LVertices.dim(); i++) {
+                Vertice v = (Vertice) LVertices.getElem(i);
+                v.marcado = false;
+            }
+        }
+    
+     Grafo grafo = new Grafo();
+        
+        // Agregar vértices y arcos para la primera isla...
+        grafo.crearVertice("A");
+        grafo.crearVertice("B");
+        grafo.crearVertice("C");
+        grafo.insertarArco("A", "B", 1);
+        grafo.insertarArco("B", "C", 1);
+    
+        // Agregar vértices y arcos para la segunda isla...
+        grafo.crearVertice("D");
+        grafo.crearVertice("E");
+        grafo.crearVertice("F");
+        grafo.insertarArco("D", "E", 1);
+        grafo.insertarArco("E", "F", 1);
+    
+        int numeroIslas = grafo.contarIslas();
+        System.out.println("Número de islas en el grafo: " + numeroIslas);
+    </pre>
+
+    <h2>eliminarVerticesSinAdyacentes</h2>
+    <pre>
+        public void eliminarVerticesSinAdyacentes() {
+            int i = 0;
+            while (i < LVertices.dim()) {
+                Vertice v = (Vertice) LVertices.getElem(i);
+                if (v.LArcos.dim() == 0) {
+                    // El vértice no tiene adyacentes, eliminarlo
+                    LVertices.eliminar(i);
+                } else {
+                    i++;
+                }
+            }
+        }
+         
+         public void imprimir() {
+        System.out.println("Estado actual del grafo:");
+    
+        for (int i = 0; i < LVertices.dim(); i++) {
+            Vertice v = (Vertice) LVertices.getElem(i);
+            System.out.print(v.getNombre() + " -> ");
+            for (int j = 0; j < v.LArcos.dim(); j++) {
+                Arco a = (Arco) v.LArcos.getElem(j);
+                System.out.print(a.getNombreVertD() + " (Costo: " + a.getCosto() + ") ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+    
+    Grafo grafo = new Grafo();
+        
+        // Agregar vértices y arcos para la primera isla...
+        grafo.crearVertice("A");
+        grafo.crearVertice("B");
+        grafo.crearVertice("C");
+        grafo.insertarArco("A", "B", 1);
+        grafo.insertarArco("B", "C", 1);
+    
+        // Agregar vértices y arcos para la segunda isla...
+        grafo.crearVertice("D");
+        grafo.crearVertice("E");
+        grafo.crearVertice("F");
+        grafo.insertarArco("D", "E", 1);
+        grafo.insertarArco("E", "F", 1);
+    
+       System.out.println("Estado actual del grafo antes de eliminar vértices sin adyacentes:");
+        grafo.imprimir();
+    
+        grafo.eliminarVerticesSinAdyacentes();
+    
+        System.out.println("Estado actual del grafo después de eliminar vértices sin adyacentes:");
+        grafo.imprimir();
+    </pre>
+
+    <h2>imprimirCaminoUnico</h2>
+    <pre>
+        public void imprimirCaminoUnico(String origen, String destino) {
+            desmarcarTodos();
+            Lista camino = new Lista();
+            Vertice vInicio = buscarVertice(origen);
+            Vertice vFin = buscarVertice(destino);
+    
+            if (vInicio != null && vFin != null) {
+                if (existeCaminoUnico(vInicio, vFin, camino)) {
+                    System.out.println("Camino único entre " + origen + " y " + destino + ":");
+                    for (int i = 0; i < camino.dim(); i++) {
+                        System.out.print(camino.getElem(i) + " ");
+                    }
+                    System.out.println();
+                } else {
+                    System.out.println("No existe camino único entre " + origen + " y " + destino);
+                }
+            } else {
+                System.out.println("Vértices no encontrados");
+            }
+        }
+    
+        private boolean existeCaminoUnico(Vertice inicio, Vertice fin, Lista camino) {
+            inicio.marcado = true;
+            camino.insertarUlt(inicio.getNombre());
+    
+            if (inicio.equals(fin)) {
+                // Se llegó al destino, se encontró un camino
+                return true;
+            }
+    
+            for (int i = 0; i < inicio.LArcos.dim(); i++) {
+                Arco arco = (Arco) inicio.LArcos.getElem(i);
+                Vertice siguiente = buscarVertice(arco.getNombreVertD());
+    
+                if (!siguiente.marcado) {
+                    if (existeCaminoUnico(siguiente, fin, camino)) {
+                        return true;
+                    }
+                }
+            }
+    
+            // Retroceder si no se encontró un camino desde este punto
+            inicio.marcado = false;
+            camino.eliminarUlt();
+            return false;
+        }
+    
+     public static void main(String[] args) {
+        Grafo grafo = new Grafo();
+        
+        // Agregar vértices y arcos para la primera isla...
+        grafo.crearVertice("A");
+        grafo.crearVertice("B");
+        grafo.crearVertice("C");
+        grafo.insertarArco("A", "B", 1);
+        grafo.insertarArco("C", "B", 1);
+    
+        // Agregar vértices y arcos para la segunda isla...
+        grafo.crearVertice("D");
+        grafo.crearVertice("E");
+        grafo.crearVertice("F");
+        grafo.insertarArco("D", "E", 1);
+        grafo.insertarArco("E", "F", 1);
+    
+        grafo.imprimirCaminoUnico("A", "C");
+    }
+    
+    </pre>
+
+    <h2>numeroCaminosDistintos</h2>
+    <pre>public int numeroCaminosDistintos(String origen, String destino) {
+        desmarcarTodos();
+        Vertice vInicio = buscarVertice(origen);
+        Vertice vFin = buscarVertice(destino);
+
+        if (vInicio != null && vFin != null) {
+            return contarCaminosDistintos(vInicio, vFin);
+        } else {
+            System.out.println("Vértices no encontrados");
+            return 0;
+        }
+    }
+
+    private int contarCaminosDistintos(Vertice inicio, Vertice fin) {
+        inicio.marcado = true;
+
+        if (inicio.equals(fin)) {
+            // Se llegó al destino, se encontró un camino
+            inicio.marcado = false;
+            return 1;
+        }
+
+        int totalCaminos = 0;
+        for (int i = 0; i < inicio.LArcos.dim(); i++) {
+            Arco arco = (Arco) inicio.LArcos.getElem(i);
+            Vertice siguiente = buscarVertice(arco.getNombreVertD());
+
+            if (!siguiente.marcado) {
+                totalCaminos += contarCaminosDistintos(siguiente, fin);
+            }
+        }
+
+        // Retroceder para explorar otros caminos
+        inicio.marcado = false;
+        return totalCaminos;
+    }
+
+int cantidadCaminos = grafo.numeroCaminosDistintos("A", "C");
+    System.out.println("Número de caminos distintos: " + cantidadCaminos);
+</pre>
+    <h2>contarCaminosDeLongitudK</h2>
+    <pre>
+        El concepto de "Caminos de Longitud K" se refiere a encontrar todos los caminos posibles en un grafo que tienen una longitud específica 
+ 
+        K. La longitud de un camino se define como el número de arcos (o vértices, según la interpretación) a lo largo del camino
+        
+        
+        
+         private int contarCaminosDeLongitudK(Vertice actual, Vertice destino, int k, int longitudActual) {
+                actual.marcado = true;
+        
+                if (actual.equals(destino) && longitudActual == k) {
+                    // Se encontró un camino de longitud K
+                    actual.marcado = false;
+                    return 1;
+                }
+        
+                int totalCaminos = 0;
+                for (int i = 0; i < actual.LArcos.dim(); i++) {
+                    Arco arco = (Arco) actual.LArcos.getElem(i);
+                    Vertice siguiente = buscarVertice(arco.getNombreVertD());
+        
+                    if (!siguiente.marcado) {
+                        totalCaminos += contarCaminosDeLongitudK(siguiente, destino, k, longitudActual + 1);
+                    }
+                }
+        
+                // Retroceder para explorar otros caminos
+                actual.marcado = false;
+                return totalCaminos;
+            }
+        
+        public static void main(String[] args) {
+            // Crear grafo y agregar vértices y arcos
+            Grafo grafo = new Grafo();
+            grafo.crearVertice("A");
+            grafo.crearVertice("B");
+            grafo.crearVertice("C");
+            grafo.crearVertice("D");
+        
+            grafo.insertarArco("A", "B", 1);
+            grafo.insertarArco("A", "C", 1);
+            grafo.insertarArco("B", "D", 1);
+            grafo.insertarArco("C", "D", 1);
+        
+            // Definir vértice de inicio, vértice de destino y longitud K
+            String inicio = "A";
+            String destino = "D";
+            int longitudK = 2;
+        
+            // Llamar al método para contar caminos de longitud K
+            int cantidadCaminos = grafo.contarCaminosDeLongitudK(inicio, destino, longitudK);
+        
+            // Mostrar el resultado
+            System.out.println("Número de caminos de longitud " + longitudK + " entre " + inicio + " y " + destino + ": " + cantidadCaminos);
+        } 
+    </pre>
+</body>
+</html>
