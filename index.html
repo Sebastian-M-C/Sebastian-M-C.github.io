@@ -147,33 +147,39 @@
         System.out.println(h.conexo());
     </pre>
 
-    <h2>esArbolBinario</h2>
+    <h2>esArbolBinario  Grafos</h2>
     <pre>
-       private boolean esArbolBinario(Vertice origen)
-    {
-        origen.marcado=true;
-        System.out.println(origen.getNombre());
-        if(origen.LArcos.dim()>2)
-        {
+        public boolean esArbolBinario(String A) {
+            desmarcarTodos();
+            ordenarVerticesAlf();
+            
+            Vertice verticeInicial = buscarVertice(A);
+            if (verticeInicial == null) {
+            JOptionPane.showMessageDialog(null, "El vertice no existe");
             return false;
-        }
-        for (int i = 0; i < origen.LArcos.dim(); i++) {
+            }
+            return esArbolBinario(verticeInicial);
+            }
+            
+            private boolean esArbolBinario(Vertice origen) {
+            origen.marcado = true;
+            System.out.println(origen.getNombre());
+            if (origen.LArcos.dim() > 2) {
+            return false;
+            }
+            for (int i = 0; i < origen.LArcos.dim(); i++) {
             Arco a = (Arco) origen.LArcos.getElem(i);
             Vertice hijo = buscarVertice(a.getNombreVertD());
-            if(!hijo.marcado)
-            {
-                if(!esArbolBinario(hijo))
-                {
-                    return false;
-                }
+            if (!hijo.marcado) {
+            if (!esArbolBinario(hijo)) {
+            return false;
             }
-            else
-            {
-                return false;
+            } else {
+            return false;
             }
-        }
-        return true;
-    }
+            }
+            return true;
+            }
 
 public static void main(String[] args) {
     Grafo grafo = new Grafo();
@@ -679,5 +685,206 @@ int cantidadCaminos = grafo.numeroCaminosDistintos("A", "C");
             System.out.println("Número de caminos de longitud " + longitudK + " entre " + inicio + " y " + destino + ": " + cantidadCaminos);
         } 
     </pre>
+
+    <h1>-------------------------ARBOLES M-VIAS---------------------------------------------------</h1>
+    <h2>Imprimir Nivel</h2>
+    <pre>
+        public void imprimirNivel(int x) {
+            imprimirNivel(raiz, x);
+        }
+        
+        public void imprimirNivel(Nodo pr, int nivel) {
+            if (pr == null || nivel < 1) {
+                return;
+            } else if (nivel == 1) {
+                for (int i = 1; i <= pr.CantOcupados(); i++) {
+                    System.out.print(pr.getElem(i) + " ");
+                }
+            } else {
+                for (int i = 1; i <= pr.CantOcupados(); i++) {
+                    imprimirNivel(pr.getHijo(i), nivel - 1);
+                }
+                imprimirNivel(pr.getHijo(pr.CantOcupados() + 1), nivel - 1);
+            }
+        }
+    </pre>
+
+    <H2>Sumar Nivel todos los que sean de ese nivel</H2>
+    <pre>
+        public int sumarLevel(int x) {
+            return sumarLevel(raiz, x);
+        }
+        
+        public int sumarLevel(Nodo pr, int nivel) {
+            if (pr == null || nivel < 1) {
+                return -1;
+            } else if (nivel == 1) {
+                int suma = 0;
+                for (int i = 1; i <= pr.CantOcupados(); i++) {
+                    suma += pr.getElem(i);
+                }
+                return suma;
+            } else {
+                int suma = 0;
+                for (int i = 1; i <= pr.CantOcupados(); i++) {
+                    suma += pr.getElem(i);
+                }
+                for (int i = 1; i <= pr.M; i++) {
+                    if (pr.getHijo(i) != null) {
+                        suma += sumarLevel(pr.getHijo(i), nivel - 1);
+                    }
+                }
+                return suma;
+            }
+        }
+    </pre>
+
+    <h2>Sumar desde un determinado nivel hasta el final</h2>
+    <pre>
+        public int sumarDesdeNivel(int nivelObjetivo) {
+            return sumarDesdeNivel(raiz, 1, nivelObjetivo);
+        }
+        
+        private int sumarDesdeNivel(Nodo pr, int nivelActual, int nivelObjetivo) {
+            if (pr == null || nivelActual > nivelObjetivo) {
+                return 0;
+            } else if (nivelActual >= nivelObjetivo) {
+                int suma = 0;
+                for (int i = 1; i <= pr.CantOcupados(); i++) {
+                    suma += pr.getElem(i);
+                }
+                for (int i = 1; i <= pr.M; i++) {
+                    suma += sumarDesdeNivel(pr.getHijo(i), nivelActual + 1, nivelObjetivo);
+                }
+                return suma;
+            } else {
+                int suma = 0;
+                for (int i = 1; i <= pr.M; i++) {
+                    suma += sumarDesdeNivel(pr.getHijo(i), nivelActual + 1, nivelObjetivo);
+                }
+                return suma;
+            }
+        }
+    </pre>
+
+    <h2>busqueda que me busque en nivel esta dicho elemento</h2>
+    <pre>
+        public int examen(int x) {
+            return examen(raiz, x, 1);
+        }
+        
+        public int examen(Nodo pr, int x, int nivel) {
+            if (pr == null) {
+                return -1;  // La clave no se encontró en el árbol
+            } else {
+                if (esHoja(pr)) {
+                    for (int i = 1; i <= pr.CantOcupados(); i++) {
+                        if (x == pr.getElem(i)) {
+                            return nivel;  // Se encontró la clave, devuelve el nivel actual
+                        }
+                    }
+                } else {
+                    for (int i = 1; i <= pr.CantOcupados(); i++) {
+                        if (x <= pr.getElem(i)) {
+                            return examen(pr.getHijo(i), x, nivel + 1);
+                        }
+                    }
+                    return examen(pr.getHijo(pr.CantOcupados() + 1), x, nivel + 1);
+                }
+                return -1;  // La clave no se encontró en el árbol
+            }
+        }
+    </pre>
+
+    <h2>ContarHojas</h2>
+    <pre>
+        private int cantHojas(Nodo p, int nivel) {
+            if (p == null)
+                return 0;
+            else if (nivel == 1)
+                return esHoja(p) ? 1 : 0;
+            else {
+                int r = 0;
+                for (int i = 1; i <= p.M; i++) {
+                    r += cantHojas(p.getHijo(i), nivel - 1);
+                }
+                return r;
+            }
+        }
+        
+        public int cantHojas(int nivel) {
+            return cantHojas(raiz, nivel);
+        }
+    </pre>
+
+    <h2>lastParent</h2>
+    <pre>
+        private boolean lastParent(Nodo p,int padre,int hijo)      // EJERCICIO SEGUNDO PARCIAL 2018
+    {
+      if(p==null || esHoja(p)) 
+          return false;
+      else
+      {
+            for (int i = 1; i <= p.M; i++) { 
+                boolean r = lastParent(p.getHijo(i), padre, hijo);
+                System.out.println(String.valueOf(r));
+                if(!r){  
+                    for(int m=1;m<=p.CantOcupados();m++){  
+                        if (p.getElem(m) == padre) {
+                            System.out.println(String.valueOf(p.getElem(m)));
+                            Nodo hijoActual;
+                            for(int c=1;c<=p.M;c++)
+                            {
+                                hijoActual=p.getHijo(c);
+                                if (hijoActual != null && esHoja(hijoActual)) {
+                                    for (int j = 1; j <= hijoActual.CantOcupados(); j++) {
+                                        if (hijoActual.getElem(j) == hijo) {
+                                            System.out.println(String.valueOf(hijoActual.getElem(j)));
+                                            return true;
+                                        }
+                                    }
+
+                                }
+                            }
+                            return false;
+                        }
+                    }
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+         
+    }   
+    
+    public boolean lastParent(int p,int h)
+    {
+        return lastParent(raiz,p,h);
+    }
+    </pre>
+
+    <h2>Mostrar Arbol</h2>
+    <pre>
+        private void mostrarArbol(Nodo P, int nivel) {
+            if (P != null) {
+                for (int i = 1; i <= P.CantOcupados(); i++) {
+                    mostrarArbol(P.getHijo(i), nivel + 1);
+                    StringBuilder espacio = new StringBuilder();
+                    for (int j = 0; j < nivel; j++) {
+                        espacio.append("      ");
+                    }
+                    System.out.println(espacio.toString() + P.getElem(i));
+                }
+                mostrarArbol(P.getHijo(P.M), nivel + 1);
+            }
+        }
+    
+        public void mostrarArbol() {
+            mostrarArbol(raiz, 0);
+        }
+    </pre>
+
+
 </body>
 </html>
